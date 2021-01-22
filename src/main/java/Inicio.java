@@ -14,7 +14,7 @@ public class Inicio {
     
     public static void main(String[] args) throws IOException{
         int opcion_menu = -1;
-        String[] botones = {" 1. ver gatos", "2. salir"};
+        String[] botones = {" 1. ver gatos","2. Ver fatoitos", "3. salir"};
         
         do{
             
@@ -33,6 +33,9 @@ public class Inicio {
                 case 0:
                     GatosService.verGatos();
                     break;
+                case 1:
+                    Gatos gato = new Gatos();
+                    GatosService.verFatorsito(gato.getApikey());
                 default:
                     break;
             }     

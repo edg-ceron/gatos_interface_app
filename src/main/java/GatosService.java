@@ -48,9 +48,9 @@ public class GatosService {
 
             String menu = "Opciones: \n"
                     + "1. Ver otra imagen \n"
-                    + "2. Favorito \n"
+                    + "2. Agregar Favorito \n"
                     + "3. Volver";
-            String[] botones = {"Ver otr imagen", "Favorito", "Volver"};
+            String[] botones = {"Ver otra imagen", "Agregar Favorito", "Volver"};
             String id_gato = gatos.getId();
             String opcion = (String) JOptionPane.showInputDialog(null, menu, id_gato, JOptionPane.INFORMATION_MESSAGE, fondoGato, botones, botones[1]);
             
@@ -65,7 +65,7 @@ public class GatosService {
                 case 0:
                     verGatos();
                     break;
-                case 2:
+                case 1:
                     favoritoGato(gatos);
                     break;
                 default:
@@ -79,17 +79,40 @@ public class GatosService {
     public static void favoritoGato (Gatos gato) {
         try {
             OkHttpClient client = new OkHttpClient();
-            MediaType mediaType = MediaType.parse("application/json");
+            MediaType mediaType = MediaType.parse("application/json,application/json");
             RequestBody body = RequestBody.create(mediaType, "{\n  \"image_id\": \""+gato.getId()+"\"\n}");
             Request request = new Request.Builder()
-                    .url("https://api.thecatapi.com/v1/favourites?Content-Type=application/json&x-api-key=c7aa0452-3cfe-42a1-b6c9-5758f278c745")
-                    .method("POST", body)
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("x-api-key", gato.getApikey())
-                    .build();
+              .url("https://api.thecatapi.com/v1/favourites")
+              .method("POST", body)
+              .addHeader("Content-Type", "application/json")
+              .addHeader("x-api-key", gato.getApikey())
+              .addHeader("Content-Type", "application/json")
+              .build();
             Response response = client.newCall(request).execute();
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+    
+    public static void verFatorito(String apiKey) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+          Request request = new Request.Builder()
+            .url("https://api.thecatapi.com/v1/favourites")
+            .method("GET", null)
+            .addHeader("x-api-key", apiKey)
+            .build();
+          Response response = client.newCall(request).execute();
+          
+          String elJson = response.body().string();
+          
+          //creamos el objeto gson
+          Gson gson = new Gson();
+          GatosFav[] gatosArray = gson.fromJson(elJson, GatosFav[].class);
+          
+          if (gatosArray.length > 0 ){
+              int min = 1;
+              int max = gatosArray.length;
+              int aleatorio = (int) Math.random() * ((max-min)-1) + min;
+          }
     }
 }
