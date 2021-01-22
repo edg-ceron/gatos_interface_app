@@ -1,6 +1,8 @@
 import com.google.gson.Gson;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import javax.imageio.ImageIO;
@@ -42,8 +44,50 @@ public class GatosService {
                 Image fondo = fondoGato.getImage();
                 Image modificada = fondo.getScaledInstance(800, 600, Image.SCALE_SMOOTH);
                 fondoGato = new ImageIcon(modificada);
-
             }
+
+            String menu = "Opciones: \n"
+                    + "1. Ver otra imagen \n"
+                    + "2. Favorito \n"
+                    + "3. Volver";
+            String[] botones = {"Ver otr imagen", "Favorito", "Volver"};
+            String id_gato = gatos.getId();
+            String opcion = (String) JOptionPane.showInputDialog(null, menu, id_gato, JOptionPane.INFORMATION_MESSAGE, fondoGato, botones, botones[1]);
+            
+            int seleccion = -1;
+            for(int i=0;i<botones.length;i++){
+                if(opcion.equals(botones[i])){
+                    seleccion = i;
+                }
+            }
+
+            switch (seleccion) {
+                case 0:
+                    verGatos();
+                    break;
+                case 2:
+                    favoritoGato(gatos);
+                    break;
+                default:
+                    break;
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void favoritoGato (Gatos gato) {
+        try {
+            OkHttpClient client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "{\n  \"image_id\": \""+gato.getId()+"\"\n}");
+            Request request = new Request.Builder()
+                    .url("https://api.thecatapi.com/v1/favourites?Content-Type=application/json&x-api-key=c7aa0452-3cfe-42a1-b6c9-5758f278c745")
+                    .method("POST", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("x-api-key", gato.getApikey())
+                    .build();
+            Response response = client.newCall(request).execute();
         } catch (IOException e) {
             System.out.println(e);
         }

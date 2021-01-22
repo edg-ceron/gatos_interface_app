@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,7 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class Inicio {
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         int opcion_menu = -1;
         String[] botones = {" 1. ver gatos", "2. salir"};
         
